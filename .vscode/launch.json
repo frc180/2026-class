@@ -8,6 +8,20 @@
       "type": "java",
       "name": "Main",
       "request": "launch",
+      "mainClass": "Main",
+      "projectName": "2026-class"
+    },
+    {
+      "type": "java",
+      "name": "Test",
+      "request": "launch",
+      "mainClass": "Test",
+      "projectName": "2026-class"
+    },
+    {
+      "type": "java",
+      "name": "Main",
+      "request": "launch",
       "mainClass": "frc.robot.Main",
       "projectName": "2026-robot"
     },

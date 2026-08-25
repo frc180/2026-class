@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.DrivetrainSubsystem;
+import frc.robot.subsystems.Flywheel;
 import frc.robot.subsystems.vision.VisionSubsystem;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.RumbleCommand;
@@ -48,6 +49,9 @@ public class RobotContainer {
 
     @Logged(name = "Vision")
     public final VisionSubsystem vision;
+
+    @Logged(name = "Flywheel")
+    public final Flywheel flywheel;
 
     /* Path follower */
     private final AutoFactory autoFactory;
@@ -78,6 +82,7 @@ public class RobotContainer {
     
         drivetrain = TunerConstants.createDrivetrain();
         vision = new VisionSubsystem();
+        flywheel = new Flywheel();
 
         autoFactory = drivetrain.createAutoFactory();
         autoRoutines = new AutoRoutines(autoFactory);
@@ -155,6 +160,13 @@ public class RobotContainer {
         inactiveShiftWarning.onTrue(inactiveRumble.withTimeout(4));
 
         drivetrain.registerTelemetry(logger::telemeterize);
+
+
+
+        Trigger aButton = driverController.a();
+        Command spin = flywheel.runSpeed(1);
+
+        aButton.whileTrue(spin);
     }
 
     public Command getAutonomousCommand() {
