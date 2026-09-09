@@ -161,12 +161,13 @@ public class RobotContainer {
 
         drivetrain.registerTelemetry(logger::telemeterize);
 
-
+        // ========== NEW COMMANDS FROM CLASS ==========
 
         Trigger aButton = driverController.a();
         Command spin = flywheel.runSpeed(1);
-
         aButton.whileTrue(spin);
+
+        driverController.y().onTrue(flywheel.launch());
     }
 
     public Command getAutonomousCommand() {
