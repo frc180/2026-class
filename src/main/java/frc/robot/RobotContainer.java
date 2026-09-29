@@ -167,7 +167,7 @@ public class RobotContainer {
         Command spin = flywheel.runSpeed(1);
         aButton.whileTrue(spin);
 
-        driverController.y().onTrue(flywheel.launch());
+        driverController.y().whileTrue(flywheel.runSpeed(0.5));
     }
 
     public Command getAutonomousCommand() {

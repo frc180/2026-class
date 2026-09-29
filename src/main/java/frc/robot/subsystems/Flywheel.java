@@ -22,6 +22,7 @@ public class Flywheel extends SubsystemBase {
     TalonFX motorB;
 
     double targetSpeed = 0;
+    double currentSpeed = 0;
 
     // Runs when the Flywheel is created
     public Flywheel() {
@@ -35,16 +36,46 @@ public class Flywheel extends SubsystemBase {
                 .finallyDo(() -> setSpeed(0));
     }
 
+    int fuelCounter = 0;
+
+    @Override
+    public void periodic() {
+        
+        currentSpeed += targetSpeed * 0.1; // currentSpeed = currentSpeed + targetSpeed * 0.1;
+
+        currentSpeed *= 0.95; // currentSpeed = currentSpeed * 0.95;
+
+        fuelCounter++; // fuelCounter = fuelCounter + 1;
+
+        if (currentSpeed > 0.1 && fuelCounter >= 10) {
+
+            RebuiltFuelOnFly fuel = new RebuiltFuelOnFly(
+                RobotContainer.instance.drivetrain.getSimPose().getTranslation(),
+                Translation2d.kZero, // (0, 0), center of the robot
+                new ChassisSpeeds(), // speed the robot is moving, also 0, 0
+                RobotContainer.instance.drivetrain.getSimPose().getRotation(),
+                Inches.of(12), // how high to spawn the fuel
+                FeetPerSecond.of(25 * (currentSpeed / 1.9)), // how fast the fuel is moving
+                Degrees.of(65) // what angle to launch the fuel at
+            );
+            SimulatedArena.getInstance().addGamePieceProjectile(fuel);
+
+            fuelCounter = 0;
+        }
+
+        System.out.println(fuelCounter);
+    }
+
     public Command launch() {
         Runnable action = () -> {
             RebuiltFuelOnFly fuel = new RebuiltFuelOnFly(
                 RobotContainer.instance.drivetrain.getSimPose().getTranslation(),
                 Translation2d.kZero, // (0, 0), center of the robot
-                new ChassisSpeeds(),
+                new ChassisSpeeds(), // speed the robot is moving, also 0, 0
                 RobotContainer.instance.drivetrain.getSimPose().getRotation(),
-                Inches.of(12),
-                FeetPerSecond.of(15),
-                Degrees.of(45)
+                Inches.of(12), // how high to spawn the fuel
+                FeetPerSecond.of(25), // how fast the fuel is moving
+                Degrees.of(65) // what angle to launch the fuel at
             );
             SimulatedArena.getInstance().addGamePieceProjectile(fuel);
         };
@@ -58,6 +89,5 @@ public class Flywheel extends SubsystemBase {
         motorA.set(speed);
         motorB.set(speed);
         targetSpeed = speed;
-        System.out.println("Motors running at " + speed);
     }
 }
